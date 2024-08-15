@@ -6,6 +6,7 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 
 let mainWindow;
+let db;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -16,40 +17,24 @@ function createWindow() {
       contextIsolation: true,
       nodeIntegration: false,
       enableRemoteModule: false,
-      sandbox: true,
       baseURLForDataURLs: path.join(__dirname, 'renderer'),
+      scrollBounce: true,
+
     },
     autoHideMenuBar: true,
-    icon: __dirname + '/assets/books.ico'
+    icon: path.join(__dirname, 'assets', 'books.ico')
   });
 
   mainWindow.loadFile(path.join(__dirname, 'renderer', 'index.html'));
 
+  mainWindow.on('close', (event) => {
+    mainWindow.destroy()
+  })
+
   mainWindow.on('closed', function () {
-    mainWindow = null;
+    mainWindow.destroy()
   });
 }
-
-// SQLite 데이터베이스 초기화
-const dbPath = path.join(__dirname, 'database', 'books.db');
-console.log('Database path:', dbPath);
-
-const db = new sqlite3.Database(dbPath, (err) => {
-  if (err) {
-    console.error('Could not connect to SQLite database:', err.message);
-  } else {
-    db.run(`CREATE TABLE IF NOT EXISTS books (
-      isbnCode TEXT PRIMARY KEY,
-      isbnAdditional TEXT,
-      title TEXT,
-      author TEXT,
-      publisher TEXT,
-      price TEXT,
-      publicationDate TEXT,
-      additionDate DATETIME
-    )`);
-  }
-});
 
 // 현재 날짜와 시간을 ISO 8601 형식으로 반환하는 함수
 function getFormattedDate() {
@@ -255,20 +240,21 @@ ipcMain.handle('download-csv', () => {
 });
 
 ipcMain.handle('get-db-path', () => {
-  const appPath = process.cwd();
-  const dbDir = path.join(appPath, 'database');
+  const userDataPath = app.getPath('userData');
+  const dbDir = path.join(userDataPath, 'database');
 
   dialog.showMessageBoxSync({
     type: 'info',
-    title: 'Debug Info',
-    message: `App Path: ${appPath}\nDB Directory: ${dbDir}`
+    title: 'Database Info',
+    textWidth: 400,
+    message: `DB Directory: ${dbDir}`
   });
 });
 
 app.whenReady().then(() => {
   // 사용자 데이터 경로를 얻음
-  const appPath = process.cwd();
-  const dbDir = path.join(appPath, 'database');
+  const userDataPath = app.getPath('userData');
+  const dbDir = path.join(userDataPath, 'database');
 
   // 디렉토리가 존재하지 않으면 생성
   if (!fs.existsSync(dbDir)) {
@@ -279,7 +265,7 @@ app.whenReady().then(() => {
   const dbPath = path.join(dbDir, 'books.db');
   console.log('Database path:', dbPath);
 
-  const db = new sqlite3.Database(dbPath, (err) => {
+  db = new sqlite3.Database(dbPath, (err) => {
     if (err) {
       console.error('Could not connect to SQLite database:', err.message);
     } else {

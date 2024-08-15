@@ -2,9 +2,13 @@
   "name": "my-book-library-electron",
   "version": "1.0.0",
   "main": "src/main.js",
+  "bin": "src/main.js",
   "scripts": {
     "start": "electron .",
-    "deploy:osx": "electron-builder --mac",
+    "deploy:all": "npm run deploy:osx && npm run deploy:win",
+    "deploy:osx": "npm run deploy:osx-intel && npm run deploy:osx-silicon",
+    "deploy:osx-intel": "electron-builder --mac --x64",
+    "deploy:osx-silicon": "electron-builder --mac --arm64",
     "deploy:win": "npm run deploy:win32 && npm run deploy:win64",
     "deploy:win32": "electron-builder --win portable --ia32",
     "deploy:win64": "electron-builder --win portable --x64",
@@ -12,12 +16,13 @@
   },
   "build": {
     "productName": "my-book-library",
-    "appId": "io.great-stone",
+    "appId": "com.electron.my-book-library",
+    "copyright": "Copyright © 2024 ${author}",
     "asar": true,
     "mac": {
       "icon": "./src/assets/books.icns",
       "target": [
-        "default"
+        "dmg"
       ]
     },
     "dmg": {
@@ -52,7 +57,9 @@
       "app": "."
     },
     "files": [
-      "src/**/*"
+      "src/**/*",
+      "node_modules/**/*",
+      "package.json"
     ]
   },
   "keywords": [
@@ -68,6 +75,7 @@
   "dependencies": {
     "axios": "^1.7.3",
     "cheerio": "^1.0.0",
+    "electron-squirrel-startup": "^1.0.1",
     "sqlite3": "5.1.6"
   }
 }
