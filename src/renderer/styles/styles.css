@@ -1,0 +1,23 @@
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+.container {
+  flex: 1;
+}
+footer {
+  position: sticky;
+  bottom: 0;
+  width: 100%;
+  background-color: #f8f9fa;
+  padding: 10px 0;
+}
+.pagination {
+  justify-content: center;
+}
+.btn-icon-text {
+  display: flex;
+  align-items: center;
+  gap: 5px; /* 아이콘과 텍스트 사이의 간격 조정 */
+}

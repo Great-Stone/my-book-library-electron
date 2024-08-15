@@ -1,0 +1,73 @@
+{
+  "name": "my-book-library-electron",
+  "version": "1.0.0",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "deploy:osx": "electron-builder --mac",
+    "deploy:win": "npm run deploy:win32 && npm run deploy:win64",
+    "deploy:win32": "electron-builder --win portable --ia32",
+    "deploy:win64": "electron-builder --win portable --x64",
+    "help": "electron-builder --help"
+  },
+  "build": {
+    "productName": "my-book-library",
+    "appId": "io.great-stone",
+    "asar": true,
+    "mac": {
+      "icon": "./src/assets/books.icns",
+      "target": [
+        "default"
+      ]
+    },
+    "dmg": {
+      "title": "My-book-library",
+      "icon": "./src/assets/books.icns"
+    },
+    "win": {
+      "icon": "./src/assets/books.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ]
+    },
+    "directories": {
+      "buildResources": "resources",
+      "output": "dist",
+      "app": "."
+    },
+    "files": [
+      "src/**/*"
+    ]
+  },
+  "keywords": [
+    "book"
+  ],
+  "author": "Great-Stone",
+  "license": "MIT",
+  "description": "Managnin books by ISBN code",
+  "devDependencies": {
+    "electron": "^31.3.1",
+    "electron-builder": "^24.13.3"
+  },
+  "dependencies": {
+    "axios": "^1.7.3",
+    "cheerio": "^1.0.0",
+    "sqlite3": "5.1.6"
+  }
+}
