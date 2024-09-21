@@ -54,7 +54,7 @@ function getFormattedDate() {
 
 // IPC 핸들러들
 ipcMain.handle('fetch-book-data', async (event, isbn) => {
-  const cleanedIsbn = isbn.replace(/[-()]/g, '');
+  const cleanedIsbn = isbn.toString().replace(/[-()]/g, '');
 
   return new Promise((resolve, reject) => {
     db.get('SELECT * FROM books WHERE isbnCode = ?', [cleanedIsbn], async (err, row) => {
@@ -163,7 +163,7 @@ ipcMain.handle('get-books', (event, page = 1) => {
 });
 
 ipcMain.handle('delete-book', (event, isbn) => {
-  const cleanedIsbn = isbn.replace(/[-()]/g, '');
+  const cleanedIsbn = isbn.toString().replace(/[-()]/g, '');
 
   return new Promise((resolve, reject) => {
     db.run('DELETE FROM books WHERE isbnCode = ?', [cleanedIsbn], function (err) {

@@ -115,7 +115,7 @@ function displaySearchResults(books) {
 }
 
 function fetchBookData(isbn) {
-    const cleanedIsbn = isbn.replace(/[-()]/g, '');
+    const cleanedIsbn = isbn.toString().replace(/[-()]/g, '');
 
     const searchButton = document.getElementById('searchButton');
     const searchSpinner = document.getElementById('searchSpinner');
@@ -124,7 +124,7 @@ function fetchBookData(isbn) {
     searchButton.disabled = true;
     searchSpinner.classList.remove('d-none');
 
-    window.api.fetchBookData(isbn)
+    window.api.fetchBookData(cleanedIsbn)
     .then(data => {
         if (data.success) {
             latestBook = data.book;
@@ -296,9 +296,9 @@ function displayTotalBooks() {
 }
 
 function deleteBook(isbn) {
-    const cleanedIsbn = isbn.replace(/[-()]/g, '');
+    const cleanedIsbn = isbn.toString().replace(/[-()]/g, '');
 
-    window.api.deleteBook(isbn)
+    window.api.deleteBook(cleanedIsbn)
     .then(() => {
         alert('Book deleted successfully.');
         displayResultsAll();
